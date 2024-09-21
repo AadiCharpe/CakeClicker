@@ -14,6 +14,9 @@ scene("game", ()=>{
     loadSprite("cake", "simple-birthday-cake-illustration-isolated-on-white-background-birthday-cake-cartoon-vector-removebg-preview.png");
     loadSound("buy", "click-21156.mp3");
     const upgradeNames = ["Cursor\n+1 Cake per Second", "Bakery\n+10 Cakes per Second", "Cake Farm\n+50 Cakes per Second", "Cake Factory\n+200 Cakes per Second", "Cake Power Plant\n+1000 Cakes per Second"];
+    
+    loadProgress();   
+    
     add([
         rect(width(), height()),
         color(79, 149, 152)
@@ -176,6 +179,32 @@ scene("game", ()=>{
             }
         }
     })
+    function saveProgress() {
+        const gameData = {
+            score: score,
+            prices: prices,
+            owned: owned,
+            cps: cps,
+            clickStrength: clickStrength
+        };
+        localStorage.setItem('cakeClickerProgress', JSON.stringify(gameData))
+    }
+    function loadProgress() {
+        const savedData = localStorage.getItem('cakeClickerProgress');
+        if(savedData) {
+            const gameData = JSON.parse(savedData);
+            score = gameData.score;
+            prices = gameData.prices;
+            owned = gameData.owned;
+            cps = gameData.cps;
+            clickStrength = gameData.clickStrength;
+        }
+    }
+    function autoSave() {
+        saveProgress();
+        setTimeout(autoSave, 5000);
+    }
+    autoSave();
 })
 
 go("game");
